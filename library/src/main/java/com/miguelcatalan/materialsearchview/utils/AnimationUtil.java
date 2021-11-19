@@ -4,17 +4,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListener;
 
 /**
  * @author Miguel Catalan Bañuls
  */
 public class AnimationUtil {
-
     public static int ANIMATION_DURATION_SHORT = 150;
     public static int ANIMATION_DURATION_MEDIUM = 400;
     public static int ANIMATION_DURATION_LONG = 800;
