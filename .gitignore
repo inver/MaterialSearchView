@@ -18,13 +18,8 @@ lint
 classes
 gen-external-apklibs
 
-#gradle
+#Gradle
 .gradle
-local.properties
-gradlew
-gradlew.bat
-#gradle/
-build/
 
 #vi
 *.swp
