@@ -4,11 +4,12 @@ plugins {
     id 'maven-publish'
 }
 
-String appPackage = "com.miguelcatalan.materialsearchview"
+String libPackage = "com.miguelcatalan.materialsearchview"
+String libVersion = "1.6.0"
 android {
     compileSdk 34
 
-    namespace = appPackage
+    namespace = libPackage
     defaultConfig {
         minSdk 24
         targetSdkVersion 34
@@ -21,19 +22,37 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    publishing {
+        singleVariant("release") {
+            withJavadocJar()
+            withSourcesJar()
+        }
+    }
 }
 
-//task androidSourcesJar(type: Jar) {
-//    classifier 'sources'
-//    from android.sourceSets.main.java.srcDirs
-//}
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = "${libPackage}"
+            artifactId = "materialSearchView"
+            version = "${libVersion}"
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
+}
+
 
 //project.afterEvaluate {
 //    publishing {
 //        publications {
 //            release(MavenPublication) {
 //                from components.release
-//                artifact androidSourcesJar // optional sources
+////                artifact androidSourcesJar // optional sources
+//                artifact bundleReleaseAar
 //            }
 //        }
 //    }
