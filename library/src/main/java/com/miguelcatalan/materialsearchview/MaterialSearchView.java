@@ -19,6 +19,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -46,6 +47,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     public static final int REQUEST_VOICE = 9999;
 
     private MenuItem mMenuItem;
+    private int mMenuItemPosition;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
     private boolean mClearingFocus;
@@ -76,7 +78,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     private boolean allowVoiceSearch;
     private Drawable suggestionIcon;
 
-    private Context mContext;
+    private final Context mContext;
 
     public MaterialSearchView(Context context) {
         this(context, null);
@@ -99,61 +101,59 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     private void initStyle(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.MaterialSearchView, defStyleAttr, 0);
 
-        if (a != null) {
-            if (a.hasValue(R.styleable.MaterialSearchView_searchBackground)) {
-                setBackground(a.getDrawable(R.styleable.MaterialSearchView_searchBackground));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_android_textColor)) {
-                setTextColor(a.getColor(R.styleable.MaterialSearchView_android_textColor, 0));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_android_textColorHint)) {
-                setHintTextColor(a.getColor(R.styleable.MaterialSearchView_android_textColorHint, 0));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_android_hint)) {
-                setHint(a.getString(R.styleable.MaterialSearchView_android_hint));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_searchVoiceIcon)) {
-                setVoiceIcon(a.getDrawable(R.styleable.MaterialSearchView_searchVoiceIcon));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_searchCloseIcon)) {
-                setCloseIcon(a.getDrawable(R.styleable.MaterialSearchView_searchCloseIcon));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_searchBackIcon)) {
-                setBackIcon(a.getDrawable(R.styleable.MaterialSearchView_searchBackIcon));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_searchSuggestionBackground)) {
-                setSuggestionBackground(a.getDrawable(R.styleable.MaterialSearchView_searchSuggestionBackground));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_searchSuggestionIcon)) {
-                setSuggestionIcon(a.getDrawable(R.styleable.MaterialSearchView_searchSuggestionIcon));
-            }
-
-            if (a.hasValue(R.styleable.MaterialSearchView_android_inputType)) {
-                setInputType(a.getInt(R.styleable.MaterialSearchView_android_inputType, EditorInfo.TYPE_NULL));
-            }
-
-            a.recycle();
+        if (a.hasValue(R.styleable.MaterialSearchView_searchBackground)) {
+            setBackground(a.getDrawable(R.styleable.MaterialSearchView_searchBackground));
         }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_android_textColor)) {
+            setTextColor(a.getColor(R.styleable.MaterialSearchView_android_textColor, 0));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_android_textColorHint)) {
+            setHintTextColor(a.getColor(R.styleable.MaterialSearchView_android_textColorHint, 0));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_android_hint)) {
+            setHint(a.getString(R.styleable.MaterialSearchView_android_hint));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_searchVoiceIcon)) {
+            setVoiceIcon(a.getDrawable(R.styleable.MaterialSearchView_searchVoiceIcon));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_searchCloseIcon)) {
+            setCloseIcon(a.getDrawable(R.styleable.MaterialSearchView_searchCloseIcon));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_searchBackIcon)) {
+            setBackIcon(a.getDrawable(R.styleable.MaterialSearchView_searchBackIcon));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_searchSuggestionBackground)) {
+            setSuggestionBackground(a.getDrawable(R.styleable.MaterialSearchView_searchSuggestionBackground));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_searchSuggestionIcon)) {
+            setSuggestionIcon(a.getDrawable(R.styleable.MaterialSearchView_searchSuggestionIcon));
+        }
+
+        if (a.hasValue(R.styleable.MaterialSearchView_android_inputType)) {
+            setInputType(a.getInt(R.styleable.MaterialSearchView_android_inputType, EditorInfo.TYPE_NULL));
+        }
+
+        a.recycle();
     }
 
     private void initiateView() {
         LayoutInflater.from(mContext).inflate(R.layout.search_view, this, true);
         mSearchLayout = findViewById(R.id.search_layout);
 
-        mSearchTopBar = (RelativeLayout) mSearchLayout.findViewById(R.id.search_top_bar);
-        mSuggestionsListView = (ListView) mSearchLayout.findViewById(R.id.suggestion_list);
-        mSearchSrcTextView = (EditText) mSearchLayout.findViewById(R.id.searchTextView);
-        mBackBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_up_btn);
-        mVoiceBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_voice_btn);
-        mEmptyBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_empty_btn);
+        mSearchTopBar = mSearchLayout.findViewById(R.id.search_top_bar);
+        mSuggestionsListView = mSearchLayout.findViewById(R.id.suggestion_list);
+        mSearchSrcTextView = mSearchLayout.findViewById(R.id.searchTextView);
+        mBackBtn = mSearchLayout.findViewById(R.id.action_up_btn);
+        mVoiceBtn = mSearchLayout.findViewById(R.id.action_voice_btn);
+        mEmptyBtn = mSearchLayout.findViewById(R.id.action_empty_btn);
         mTintView = mSearchLayout.findViewById(R.id.transparent_view);
 
         mSearchSrcTextView.setOnClickListener(mOnClickListener);
@@ -273,7 +273,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         PackageManager pm = getContext().getPackageManager();
         List<ResolveInfo> activities = pm.queryIntentActivities(
                 new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-        return activities.size() == 0;
+        return activities.isEmpty();
     }
 
     public void hideKeyboard(View view) {
@@ -337,13 +337,17 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 
     @SuppressLint("SoonBlockedPrivateApi")
     public void setCursorDrawable(int drawable) {
-        try {
-            // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
-            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
-            f.setAccessible(true);
-            f.set(mSearchSrcTextView, drawable);
-        } catch (Exception e) {
-            Log.e("MaterialSearchView", e.toString());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            mSearchSrcTextView.setTextCursorDrawable(drawable);
+        } else {
+            try {
+                // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
+                Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+                f.setAccessible(true);
+                f.set(mSearchSrcTextView, drawable);
+            } catch (Exception e) {
+                Log.e("MaterialSearchView", e.toString());
+            }
         }
     }
 
@@ -451,10 +455,21 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     /**
      * Call this method and pass the menu item so this class can handle click events for the Menu Item.
      *
-     * @param menuItem
+     * @param menu
+     * @param menuItemId id of item in menu
      */
-    public void setMenuItem(MenuItem menuItem) {
-        this.mMenuItem = menuItem;
+    public void setMenuItem(Menu menu, int menuItemId) {
+        this.mMenuItem = menu.findItem(menuItemId);
+
+        int searchMenuPosition = 0;
+        for (int i = 0; i < menu.size(); i++) {
+            if (menu.getItem(i).equals(mMenuItem)) {
+                break;
+            }
+            searchMenuPosition++;
+        }
+
+        this.mMenuItemPosition = menu.size() - searchMenuPosition;
         mMenuItem.setOnMenuItemClickListener(item -> {
             showSearch();
             return true;
@@ -502,7 +517,6 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 
         if (animate) {
             setVisibleWithAnimation();
-
         } else {
             mSearchLayout.setVisibility(VISIBLE);
             if (mSearchViewListener != null) {
@@ -534,7 +548,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         };
 
         mSearchLayout.setVisibility(View.VISIBLE);
-        AnimationUtil.reveal(mSearchTopBar, animationListener);
+        AnimationUtil.reveal(mSearchTopBar, mMenuItemPosition, animationListener);
     }
 
     /**

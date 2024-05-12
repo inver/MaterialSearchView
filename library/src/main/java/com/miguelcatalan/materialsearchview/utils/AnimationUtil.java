@@ -2,12 +2,11 @@ package com.miguelcatalan.materialsearchview.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorListener;
 
@@ -50,36 +49,43 @@ public class AnimationUtil {
     public static void fadeInView(View view, int duration, final AnimationListener listener) {
         view.setVisibility(View.VISIBLE);
         view.setAlpha(0f);
-        ViewPropertyAnimatorListener vpListener = null;
+        Animator.AnimatorListener vpListener = null;
 
         if (listener != null) {
-            vpListener = new ViewPropertyAnimatorListener() {
+            vpListener = new Animator.AnimatorListener() {
                 @Override
-                public void onAnimationStart(View view) {
+                public void onAnimationStart(@NonNull Animator animation) {
                     if (!listener.onAnimationStart(view)) {
                         view.setDrawingCacheEnabled(true);
                     }
                 }
 
                 @Override
-                public void onAnimationEnd(View view) {
+                public void onAnimationEnd(@NonNull Animator animation) {
                     if (!listener.onAnimationEnd(view)) {
                         view.setDrawingCacheEnabled(false);
                     }
                 }
 
                 @Override
-                public void onAnimationCancel(View view) {
+                public void onAnimationCancel(@NonNull Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(@NonNull Animator animation) {
+
                 }
             };
         }
-        ViewCompat.animate(view).alpha(1f).setDuration(duration).setListener(vpListener);
+        view.animate().alpha(1f).setDuration(duration).setListener(vpListener);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void reveal(final View view, final AnimationListener listener) {
+    public static void reveal(final View view, final int menuItemPosition, final AnimationListener listener) {
+
         int cx = view.getWidth() - (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 24, view.getResources().getDisplayMetrics());
+                TypedValue.COMPLEX_UNIT_DIP, 48 * menuItemPosition - 24, view.getResources().getDisplayMetrics()
+        );
         int cy = view.getHeight() / 2;
         int finalRadius = Math.max(view.getWidth(), view.getHeight());
 

@@ -3,14 +3,17 @@ plugins {
     id 'kotlin-android'
 }
 
+String appPackage = "com.miguelcatalan.materialsearchview.sample"
 android {
-    compileSdkVersion 31
+    namespace = appPackage
+    compileSdk 34
 
     defaultConfig {
-        applicationId "com.miguelcatalan.materialsearchview.sample"
-        minSdkVersion 22
-        targetSdkVersion 31
-        versionCode 6
+        applicationId appPackage
+        minSdk 24
+
+        targetSdkVersion 34
+        versionCode 7
         versionName "1.5.0"
     }
     buildTypes {

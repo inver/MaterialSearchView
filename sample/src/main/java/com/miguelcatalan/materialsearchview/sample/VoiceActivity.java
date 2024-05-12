@@ -28,7 +28,7 @@ public class VoiceActivity extends AppCompatActivity {
 
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         searchView.setVoiceSearch(true);
-        searchView.setCursorDrawable(R.drawable.color_cursor_white);
+        searchView.setCursorDrawable(com.miguelcatalan.materialsearchview.R.drawable.color_cursor_white);
         searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
@@ -61,9 +61,7 @@ public class VoiceActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
+        searchView.setMenuItem(menu, R.id.action_search);
 
         return true;
     }
