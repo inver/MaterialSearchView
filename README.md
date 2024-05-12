@@ -16,7 +16,7 @@ http://www.materialdoc.com/search-filter/
 **Add the dependencies to your gradle file:**
 ```javascript
 	dependencies {
-    	compile 'com.miguelcatalan:materialsearchview:1.4.0'
+    	compile 'com.miguelcatalan:materialsearchview:1.6.0'
 	}
 ```
 **Add MaterialSearchView to your layout file along with the Toolbar** *(Add this block at the bottom of your layout, in order to display it over the rest of the view)*:
@@ -52,15 +52,13 @@ http://www.materialdoc.com/search-filter/
 ```
 **Add define it in the *onCreateOptionsMenu*:**
 ```java
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+    @Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_single, menu);
+    searchView.setMenuItem(menu, R.id.action_search);
 
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-        return true;
-    }
+    return true;
+}
 ```
 **Set the listeners:**
 ```java
